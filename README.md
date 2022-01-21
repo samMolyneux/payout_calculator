@@ -1,0 +1,1 @@
+calculator for payout of poker home games
