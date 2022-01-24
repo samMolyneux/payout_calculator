@@ -14,34 +14,34 @@ export default function Home() {
 
       {/* A player element */}
       <div className=" flex bg-gray-700 p-1 my-2 rounded">
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <div className=" flex bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <div className=" bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
       </div>
       <div className=" flex bg-gray-700 p-1 my-2 rounded">
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <div className=" flex bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <div className=" bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
       </div>
       <div className=" flex bg-gray-700 p-1 my-2 rounded">
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <div className=" flex bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <div className=" bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
       </div>
       <div className=" flex bg-gray-700 p-1 my-2 rounded">
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <div className=" flex bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <div className=" bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
       </div>
       <div className=" flex bg-gray-700 p-1 my-2 rounded">
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <input className=" flex bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
-        <div className=" flex bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <input className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"></input>
+        <div className=" bg-gray-400 p-2  rounded w-20 h-6 mx-1"></div>
       </div>
       
 
