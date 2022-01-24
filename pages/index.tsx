@@ -3,9 +3,11 @@ export default function Home(){
     <div className="h-screen w-screen flex flex-col justify-center items-center">
 
 
-    <div className="text-2xl text-red-400 text-center">Hello World</div>
+    <div className="text-2xl text-center">payout_calculator</div>
 
-    <button className="p-2 flex w-24 h-16 border bg-blue-500 text-white font-medium rounded hover:font-bold"> I'm a button</button>
+    <div className="p-2"></div>
+
+    <button className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold"> CALCULATE</button>
 
     </div>
 
