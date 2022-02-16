@@ -45,7 +45,6 @@ const InputRow: React.FC<{
 };
 
 const InputForm: React.FC<{
-  calculate: () => void;
 }> = (props) => {
   return (
     <div className="flex flex-col justify-center items-center">
