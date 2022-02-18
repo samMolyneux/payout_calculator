@@ -1,6 +1,5 @@
 import type React from "react";
 import { useState } from "react";
-import { calcNet as calcNet } from "../scripts/calcNet";
 
 export default function Home() {
   return (
@@ -12,50 +11,83 @@ export default function Home() {
   );
 }
 
-const InputForm: React.FC<{}> = (props) => {
-  const testVal = 0;
+interface Player {
+  name: string;
+  net: number;
+}
 
-  let ledger: { [name: string]: number } = {};
+interface Transaction {
+  from: string;
+  to: string;
+  val: number;
+}
+
+const InputForm: React.FC<{}> = (props) => {
+  let ledger: Player[] = new Array();
+  let transactions: Transaction[] = new Array();
 
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
 
-    ledger[playerName] = net;
-
+    ledger.push({ name: playerName, net: net });
+    console.log("current state: ");
     console.log(ledger);
   }
 
-  function calculate(ledger: { [name: string]: number }) {
+  function calculate(players: Player[]) {
+    console.log("current players:");
+    console.log(players);
     let sum = 0;
-    let positives: { [name: string]: number } = {};
-    let negatives: { [name: string]: number } = {};
+    let positives: Player[] = new Array();
+    let negatives: Player[] = new Array();
 
-    for (const [key, value] of Object.entries(ledger)) {
-      console.log(key, value);
-      sum = sum + value;
-
-      if (value > 0) {
-        positives[key] = value;
-      } else if (value < 0) {
-        negatives[key] = value;
+    players.forEach((player) => {
+      sum = sum + player.net;
+      if (player.net > 0) {
+        positives.push({name: player.name, net: player.net});
+      } else if (player.net < 0) {
+        negatives.push({name: player.name, net :player.net});
       } else {
         console.log("evens");
         return;
       }
-    }
-
-    for (const [key, value] of Object.entries(positives).sort((a, b) => b[1] - a[1])) {
-      //check
-      let mostNeg = Object.entries(negatives).sort((a, b) => b[1] - a[1])[0];
-
-
-    }
-
+    });
 
     if (sum != 0) {
-      console.log("INVALID INPUT: entries do not sum to zero");
-      return;
+      console.log("INVALID INPUT: entries do not sum to zero\n actual sum:  ", sum);
+      return; 
     }
+     while (negatives.length != 0) {
+      positives = positives.sort((a, b) => b.net - a.net);
+      positives.forEach((curr) => {
+        
+        let source = negatives.sort((a, b) => a.net - b.net)[0];
+
+        let sourceVal = Math.abs(source.net);
+        let destVal = curr.net;
+        let transactionVal = Math.min(sourceVal, destVal);
+        if(sourceVal == destVal){
+          
+          positives = positives.filter((player) => player !== curr);
+          negatives = negatives.filter((player) => player !== source);
+          
+        }else if (sourceVal > destVal){
+          positives = positives.filter((player) => player !== curr);
+          source.net = source.net + transactionVal;
+        }else{
+          negatives = negatives.filter((player) => player !== source);
+          curr.net = curr.net - transactionVal;
+        }
+
+        transactions.push({from: source.name, to: curr.name, val: transactionVal});
+        console.log("Transactions: ", transactions, "\n positives: ", positives, "\n negatives: ", negatives);
+      });
+
+    }
+    
+
+    console.log("Transactions: ", transactions);
+    transactions = new Array();
   }
   return (
     <div className="flex flex-col justify-center items-center">
@@ -119,6 +151,7 @@ const InputRow: React.FC<{
         type="number"
         id="inVal"
         name="inVal"
+        step="0.01"
         value={inVal}
         className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"
         onChange={(e) => setInVal(e.target.valueAsNumber)}
@@ -126,6 +159,7 @@ const InputRow: React.FC<{
       <input
         type="number"
         id="outVal"
+        step="0.01"
         value={outVal}
         className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"
         onChange={(e) => setOutVal(e.target.valueAsNumber)}
@@ -135,12 +169,12 @@ const InputRow: React.FC<{
         id="netVal"
         className=" bg-gray-400 rounded w-20 h-6 mx-1 px-2 text-gray-700"
       >
-        {outVal - inVal}
+        {Math.round((outVal - inVal)* 100)/100}
       </div>
 
       <button
         className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 "
-        onClick={(e) => props.addPlayer(playerName, outVal - inVal)}
+        onClick={(e) => props.addPlayer(playerName, Math.round((outVal - inVal)* 100))}
       >
         Add Player
       </button>
