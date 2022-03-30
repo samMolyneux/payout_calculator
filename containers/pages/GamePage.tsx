@@ -2,7 +2,7 @@ import type React from "react"
 import { useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import { Button, Content, PageHeader, Panel, PanelRow, Root, Text, TextField } from "../../ui-library/src"
-import { AddPlayerDialog } from "../../containers"
+import { AddPlayerDialog } from ".."
 
 export default function GamePage() {
     const { gameId } = useParams(); 

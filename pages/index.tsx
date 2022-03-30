@@ -1,6 +1,6 @@
 import type React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom"
-import { GamePage, Home, TransactionsPage } from "./page";
+import { GamePage, Home, TransactionsPage } from "../containers/pages";
 
 export default function App() {
   return (
