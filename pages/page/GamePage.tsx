@@ -144,10 +144,11 @@ const InputForm: React.FC<{}> = (props) => {
 
                 {/* A player element */}
 
-                {ledger.map((player) => {
+                {ledger.map((player, index) => {
                     return (
                         <>
                             <InputRow
+                                key={index}
                                 playerName={player.name} 
                                 inAmount={player.in}
                                 outAmount={player.out}

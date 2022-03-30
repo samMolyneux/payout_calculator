@@ -52,9 +52,9 @@ const TransactionsPage = () => {
                         <Text bold>Amount</Text>
                     </PanelRow>
 
-                    {transactions.map(transaction => {
+                    {transactions.map((transaction, index) => {
                         return (
-                            <PanelRow>
+                            <PanelRow key={index}>
                                 <Text>{transaction.from}</Text>
                                 <Text>{transaction.to}</Text>
                                 <Text>{transaction.val}</Text>
