@@ -71,28 +71,38 @@ const InputForm: React.FC<{}> = (props) => {
     let transactions: Transaction[] = new Array();
 
     function calculate(players: Player[]) {
-        console.log("current players:");
-        console.log(players);
+        console.log({players});
         let sum = 0;
         let positives: Player[] = new Array();
         let negatives: Player[] = new Array();
 
-        players.forEach((player) => {
-        sum = sum + player.net;
-        if (player.net > 0) {
-            positives.push({name: player.name, in: player.in, out: player.out, net: player.net});
-        } else if (player.net < 0) {
-            negatives.push({name: player.name, in: player.in, out: player.out, net :player.net});
-        } else {
-            console.log("evens");
-            return;
+        for (let player of players) {
+            sum += player.net;
+            if (player.net > 0) {
+                positives.push(player);
+            } else if (player.net < 0) {
+                negatives.push(player);
+            } else {
+                console.log("evens");
+            }
         }
-        });
 
         if (sum != 0) {
-        console.log("INVALID INPUT: entries do not sum to zero\n actual sum:  ", sum);
+            console.log("INVALID INPUT: entries do not sum to zero\n actual sum:  ", sum);
         return; 
         }
+
+        positives.forEach((pos) => {
+            for (let neg of negatives) {
+                if (pos.net + neg.net === 0) {
+                    transactions.push({from: pos.name, to: neg.name, val: pos.net});
+                    positives.splice(positives.indexOf(pos), 1);
+                    negatives.splice(negatives.indexOf(neg), 1);
+                    break;
+                }
+            }
+        });
+
         while (negatives.length != 0) {
             positives = positives.sort((a, b) => b.net - a.net);
             console.log(positives);
@@ -105,8 +115,8 @@ const InputForm: React.FC<{}> = (props) => {
                 let transactionVal = Math.min(sourceVal, destVal);
                 if(sourceVal == destVal){
                 
-                positives = positives.filter((player) => player !== curr);
-                negatives = negatives.filter((player) => player !== source);
+                    positives = positives.filter((player) => player !== curr);
+                    negatives = negatives.filter((player) => player !== source);
                 
                 }else if (sourceVal > destVal){
                     positives = positives.filter((player) => player !== curr);
@@ -128,8 +138,10 @@ const InputForm: React.FC<{}> = (props) => {
 
     const handleCalculateClick = ():void => {
         ledger.forEach(player => player.net = player.out-player.in);
+        setLedger(ledger);
         calculate(ledger); 
         navigate(`/transactions/game/${gameId}/`, {state: transactions});
+        transactions = new Array();
     }
 
     return (

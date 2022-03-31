@@ -57,7 +57,7 @@ const TransactionsPage = () => {
                             <PanelRow key={index}>
                                 <Text>{transaction.from}</Text>
                                 <Text>{transaction.to}</Text>
-                                <Text>{transaction.val}</Text>
+                                <Text>£{transaction.val}</Text>
                             </PanelRow>
                         )
                     })}
