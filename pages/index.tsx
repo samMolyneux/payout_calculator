@@ -20,6 +20,7 @@ interface Transaction {
   from: string;
   to: string;
   val: number;
+  key: string;
 }
 
 const InputForm: React.FC<{}> = (props) => {
@@ -90,6 +91,7 @@ const InputForm: React.FC<{}> = (props) => {
           from: source.name,
           to: curr.name,
           val: transactionVal,
+          key: source.name + curr.name + transactionVal.toString()
         });
         console.log(
           "Transactions: ",
@@ -150,7 +152,7 @@ const InputForm: React.FC<{}> = (props) => {
       </button>
       <div className="flex flex-col w-full max-w-2xl border">
         {transactions.map((transaction)=>{
-          return <TransactionRow transaction={transaction}/>
+          return <TransactionRow key = {transaction.key} transaction={transaction}/>
         })}
       </div>
       
@@ -214,6 +216,7 @@ const InputRow: React.FC<{
 
 const TransactionRow: React.FC<{
   transaction: Transaction;
+  key: string
 }> = (props) => {
   return(
 
