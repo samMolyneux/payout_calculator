@@ -27,6 +27,7 @@ const InputForm: React.FC<{}> = (props) => {
   let numPlayers = 0;
   let ledger: Player[] = new Array();
   let transactions: Transaction[] = new Array();
+  const [output, setOutput] = useState<Transaction[]>([]);
 
   
 
@@ -103,9 +104,8 @@ const InputForm: React.FC<{}> = (props) => {
         );
       });
     }
-
+    setOutput(transactions);
     console.log("Transactions: ", transactions);
-    transactions = new Array();
 
   }
   return (
@@ -151,7 +151,7 @@ const InputForm: React.FC<{}> = (props) => {
         CALCULATE
       </button>
       <div className="flex flex-col w-full max-w-2xl border">
-        {transactions.map((transaction)=>{
+        {output.map((transaction)=>{
           return <TransactionRow key = {transaction.key} transaction={transaction}/>
         })}
       </div>
@@ -218,12 +218,16 @@ const TransactionRow: React.FC<{
   transaction: Transaction;
   key: string
 }> = (props) => {
+  const [inVal, setInVal] = useState(0);
+  const [outVal, setOutVal] = useState(0);
+  const [playerName, setPlayerName] = useState("");
   return(
+    
 
     <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
-      <div className=" flex bg-gray-600 p-2">From: {props.transaction.from}</div>
-      <div className=" flex bg-gray-600 p-2">From: {props.transaction.to}</div>
-      <div className=" flex bg-gray-600 p-2">Total: £{props.transaction.from}</div>
+      <div className=" flex ">From: {props.transaction.from}</div>
+      <div className=" flex  p-2">To: {props.transaction.to}</div>
+      <div className=" flex  p-2">Total: £{Number(props.transaction.val/100).toFixed(2)}</div>
     </div>
   );
 }
