@@ -23,8 +23,11 @@ interface Transaction {
 }
 
 const InputForm: React.FC<{}> = (props) => {
+  let numPlayers = 0;
   let ledger: Player[] = new Array();
   let transactions: Transaction[] = new Array();
+
+  
 
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
@@ -32,10 +35,11 @@ const InputForm: React.FC<{}> = (props) => {
     ledger.push({ name: playerName, net: net });
     console.log("current state: ");
     console.log(ledger);
+    numPlayers++;
   }
 
   function calculate(players: Player[]) {
-    console.log("current players:");
+    console.log("current players: ");
     console.log(players);
     let sum = 0;
     let positives: Player[] = new Array();
@@ -44,53 +48,67 @@ const InputForm: React.FC<{}> = (props) => {
     players.forEach((player) => {
       sum = sum + player.net;
       if (player.net > 0) {
-        positives.push({name: player.name, net: player.net});
+        positives.push({ name: player.name, net: player.net });
       } else if (player.net < 0) {
-        negatives.push({name: player.name, net :player.net});
+        negatives.push({ name: player.name, net: player.net });
       } else {
         console.log("evens");
         return;
-      }
+      }//
     });
 
     if (sum != 0) {
-      console.log("INVALID INPUT: entries do not sum to zero\n actual sum:  ", sum);
-      return; 
+      console.log(
+        "INVALID INPUT: entries do not sum to zero\n actual sum:  ",
+        sum
+      );
+      transactions.forEach(element => {
+        transactions.pop();
+      });
+      return;
     }
-     while (negatives.length != 0) {
+    while (negatives.length != 0) {
       positives = positives.sort((a, b) => b.net - a.net);
       positives.forEach((curr) => {
-        
         let source = negatives.sort((a, b) => a.net - b.net)[0];
 
         let sourceVal = Math.abs(source.net);
         let destVal = curr.net;
         let transactionVal = Math.min(sourceVal, destVal);
-        if(sourceVal == destVal){
-          
+        if (sourceVal == destVal) {
           positives = positives.filter((player) => player !== curr);
           negatives = negatives.filter((player) => player !== source);
-          
-        }else if (sourceVal > destVal){
+        } else if (sourceVal > destVal) {
           positives = positives.filter((player) => player !== curr);
           source.net = source.net + transactionVal;
-        }else{
+        } else {
           negatives = negatives.filter((player) => player !== source);
           curr.net = curr.net - transactionVal;
         }
 
-        transactions.push({from: source.name, to: curr.name, val: transactionVal});
-        console.log("Transactions: ", transactions, "\n positives: ", positives, "\n negatives: ", negatives);
+        transactions.push({
+          from: source.name,
+          to: curr.name,
+          val: transactionVal,
+        });
+        console.log(
+          "Transactions: ",
+          transactions,
+          "\n positives: ",
+          positives,
+          "\n negatives: ",
+          negatives
+        );
       });
-
     }
-    
 
     console.log("Transactions: ", transactions);
     transactions = new Array();
+
   }
   return (
     <div className="flex flex-col justify-center items-center">
+      
       {/* labels */}
       <div className=" flex p-1 my-1 rounded">
         <div className=" flex p-2 text-gray-600 rounded w-20 h-6 mx-1 justify-center">
@@ -110,6 +128,8 @@ const InputForm: React.FC<{}> = (props) => {
 
       {/* A player element */}
 
+
+
       <InputRow addPlayer={addPlayer} />
       <InputRow addPlayer={addPlayer} />
       <InputRow addPlayer={addPlayer} />
@@ -128,9 +148,16 @@ const InputForm: React.FC<{}> = (props) => {
       >
         CALCULATE
       </button>
+      <div className="flex flex-col w-full max-w-2xl border">
+        {transactions.map((transaction)=>{
+          return <TransactionRow transaction={transaction}/>
+        })}
+      </div>
+      
     </div>
   );
 };
+
 
 const InputRow: React.FC<{
   addPlayer: (name: string, net: number) => void;
@@ -169,15 +196,31 @@ const InputRow: React.FC<{
         id="netVal"
         className=" bg-gray-400 rounded w-20 h-6 mx-1 px-2 text-gray-700"
       >
-        {Math.round((outVal - inVal)* 100)/100}
+        {Math.round((outVal - inVal) * 100) / 100}
       </div>
 
       <button
         className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 "
-        onClick={(e) => props.addPlayer(playerName, Math.round((outVal - inVal)* 100))}
+        onClick={(e) =>
+          props.addPlayer(playerName, Math.round((outVal - inVal) * 100))
+        }
       >
         Add Player
       </button>
+        
     </div>
   );
 };
+
+const TransactionRow: React.FC<{
+  transaction: Transaction;
+}> = (props) => {
+  return(
+
+    <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
+      <div className=" flex bg-gray-600 p-2">From: {props.transaction.from}</div>
+      <div className=" flex bg-gray-600 p-2">From: {props.transaction.to}</div>
+      <div className=" flex bg-gray-600 p-2">Total: £{props.transaction.from}</div>
+    </div>
+  );
+}
