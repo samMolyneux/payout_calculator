@@ -3,7 +3,9 @@ import { useState } from "react";
 
 export default function Home() {
   return (
+    
     <div className="h-screen w-screen flex flex-col justify-center items-center">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"></meta>
       <div className="text-2xl text-center">payout_calculator</div>
       <div className="p-2"></div>
       <InputForm />
