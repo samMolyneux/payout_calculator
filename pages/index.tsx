@@ -29,15 +29,14 @@ const InputForm: React.FC<{}> = (props) => {
   let transactions: Transaction[] = new Array();
   const [output, setOutput] = useState<Transaction[]>([]);
 
-  
-
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
-
-    ledger.push({ name: playerName, net: net });
+    
+      ledger.push({ name: playerName, net: net });
+      numPlayers++;
+    
     console.log("current state: ");
     console.log(ledger);
-    numPlayers++;
   }
 
   function calculate(players: Player[]) {
@@ -56,7 +55,7 @@ const InputForm: React.FC<{}> = (props) => {
       } else {
         console.log("evens");
         return;
-      }//
+      } //
     });
 
     if (sum != 0) {
@@ -64,7 +63,7 @@ const InputForm: React.FC<{}> = (props) => {
         "INVALID INPUT: entries do not sum to zero\n actual sum:  ",
         sum
       );
-      transactions.forEach(element => {
+      transactions.forEach((element) => {
         transactions.pop();
       });
       return;
@@ -92,7 +91,7 @@ const InputForm: React.FC<{}> = (props) => {
           from: source.name,
           to: curr.name,
           val: transactionVal,
-          key: source.name + curr.name + transactionVal.toString()
+          key: source.name + curr.name + transactionVal.toString(),
         });
         console.log(
           "Transactions: ",
@@ -106,11 +105,9 @@ const InputForm: React.FC<{}> = (props) => {
     }
     setOutput(transactions);
     console.log("Transactions: ", transactions);
-
   }
   return (
     <div className="flex flex-col justify-center items-center">
-      
       {/* labels */}
       <div className=" flex p-1 my-1 rounded">
         <div className=" flex p-2 text-gray-600 rounded w-20 h-6 mx-1 justify-center">
@@ -130,8 +127,6 @@ const InputForm: React.FC<{}> = (props) => {
 
       {/* A player element */}
 
-
-
       <InputRow addPlayer={addPlayer} />
       <InputRow addPlayer={addPlayer} />
       <InputRow addPlayer={addPlayer} />
@@ -148,18 +143,21 @@ const InputForm: React.FC<{}> = (props) => {
         className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
         onClick={() => calculate(ledger)}
       >
-        CALCULATE
+        Calculate
       </button>
-      <div className="flex flex-col w-full max-w-2xl border">
-        {output.map((transaction)=>{
-          return <TransactionRow key = {transaction.key} transaction={transaction}/>
+      <div className="p-2 items-center">{transactions.length?"Simplified Transactions:":""}</div>
+      <div className="flex flex-col w-full max-w-2xl">
+      
+        
+        {output.map((transaction) => {
+          return (
+            <TransactionRow key={transaction.key} transaction={transaction} />
+          );
         })}
       </div>
-      
     </div>
   );
 };
-
 
 const InputRow: React.FC<{
   addPlayer: (name: string, net: number) => void;
@@ -167,14 +165,21 @@ const InputRow: React.FC<{
   const [inVal, setInVal] = useState(0);
   const [outVal, setOutVal] = useState(0);
   const [playerName, setPlayerName] = useState("");
+  const [locked, setLocked] = useState(false);
+
+  function buttonClick(name: string, net: number, currState: boolean): boolean {
+    props.addPlayer(name, net);
+    return true;
+  }
 
   return (
     <div className=" flex bg-gray-700 p-1 my-2 rounded items-center">
       <input
         type="text"
         id="playerName"
-        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"
+        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1 disabled:bg-gray-700"
         onChange={(e) => setPlayerName(e.target.value)}
+        disabled={locked}
       ></input>
       <input
         type="number"
@@ -182,16 +187,18 @@ const InputRow: React.FC<{
         name="inVal"
         step="0.01"
         value={inVal}
-        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"
+        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1 disabled:bg-gray-700"
         onChange={(e) => setInVal(e.target.valueAsNumber)}
+        disabled={locked}
       ></input>
       <input
         type="number"
         id="outVal"
         step="0.01"
         value={outVal}
-        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1"
+        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1 disabled:bg-gray-700"
         onChange={(e) => setOutVal(e.target.valueAsNumber)}
+        disabled={locked}
       ></input>
 
       <div
@@ -202,32 +209,31 @@ const InputRow: React.FC<{
       </div>
 
       <button
-        className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 "
-        onClick={(e) =>
-          props.addPlayer(playerName, Math.round((outVal - inVal) * 100))
-        }
+        className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 disabled:bg-gray-700 disabled:border-none"
+        onClick={(e) => {
+          setLocked(
+            buttonClick(playerName, Math.round((outVal - inVal) * 100), locked)
+          );
+        }}
+        disabled = {locked}
       >
-        Add Player
+        {locked?"Confirmed":"Add Player"}
       </button>
-        
     </div>
   );
 };
 
 const TransactionRow: React.FC<{
   transaction: Transaction;
-  key: string
+  key: string;
 }> = (props) => {
-  const [inVal, setInVal] = useState(0);
-  const [outVal, setOutVal] = useState(0);
-  const [playerName, setPlayerName] = useState("");
-  return(
-    
-
+  return (
     <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
       <div className=" flex ">From: {props.transaction.from}</div>
       <div className=" flex  p-2">To: {props.transaction.to}</div>
-      <div className=" flex  p-2">Total: £{Number(props.transaction.val/100).toFixed(2)}</div>
+      <div className=" flex  p-2">
+        Amount: £{Number(props.transaction.val / 100).toFixed(2)}
+      </div>
     </div>
   );
-}
+};
