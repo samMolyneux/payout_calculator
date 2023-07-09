@@ -1,12 +1,10 @@
 import type React from "react";
 import { useState } from "react";
-import Head from "next/head";
 
 export default function Home() {
   return (
     
     <div className="h-screen w-screen flex flex-col justify-center items-center">
-      <Head><meta name="viewport" content="width=device-width, initial-scale=1.0" /></Head>
       <div className="text-2xl text-center">payout_calculator</div>
       <div className="p-2"></div>
       <InputForm />
@@ -28,16 +26,18 @@ interface Transaction {
 
 const InputForm: React.FC<{}> = (props) => {
   let numPlayers = 0;
-  let ledger: Player[] = new Array();
+  const [ledger, setLedger] = useState<Player[]>([]);
   let transactions: Transaction[] = new Array();
   const [output, setOutput] = useState<Transaction[]>([]);
 
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
     
-      ledger.push({ name: playerName, net: net });
-      numPlayers++;
+    ledger.push({ name: playerName, net: net });
+    numPlayers++;
     
+    setLedger(ledger);
+
     console.log("current state: ");
     console.log(ledger);
   }
@@ -58,7 +58,7 @@ const InputForm: React.FC<{}> = (props) => {
       } else {
         console.log("evens");
         return;
-      } //
+      }
     });
 
     if (sum != 0) {
