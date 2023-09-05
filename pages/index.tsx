@@ -5,8 +5,9 @@ export default function Home() {
   return (
     
     <div className="h-screen w-screen flex flex-col justify-center items-center">
+      {/* <div className="py-2"></div> */}
       <div className="text-2xl text-center">payout_calculator</div>
-      <div className="p-2"></div>
+      {/* <div className="py-2 px-0"></div> */}
       <InputForm />
     </div>
   );
@@ -25,21 +26,19 @@ interface Transaction {
 }
 
 const InputForm: React.FC<{}> = (props) => {
-  let numPlayers = 0;
-  const [ledger, setLedger] = useState<Player[]>([]);
+  
   let transactions: Transaction[] = new Array();
+  const [ledger, setLedger] = useState<Player[]>([]);
   const [output, setOutput] = useState<Transaction[]>([]);
 
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
     
     ledger.push({ name: playerName, net: net });
-    numPlayers++;
     
     setLedger(ledger);
 
-    console.log("current state: ");
-    console.log(ledger);
+    console.log(`current state: ${ledger}`);
   }
 
   function calculate(players: Player[]) {
