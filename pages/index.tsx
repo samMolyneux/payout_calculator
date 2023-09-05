@@ -1,5 +1,6 @@
 import type React from "react";
 import { useState } from "react";
+import { convertToPence, convertToPounds } from "../scripts/util";
 
 export default function Home() {
   return (
@@ -30,15 +31,22 @@ const InputForm: React.FC<{}> = (props) => {
   let transactions: Transaction[] = new Array();
   const [ledger, setLedger] = useState<Player[]>([]);
   const [output, setOutput] = useState<Transaction[]>([]);
+  const [discrepancy, setDiscrepancy] = useState<number>();
 
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
+    if (ledger.some((item) => (item.name === playerName))){
+      console.log("NAME ALREADY ENTERED ERROR");
+      return false;
+    }
+  
+      ledger.push({ name: playerName, net: net });
     
-    ledger.push({ name: playerName, net: net });
-    
-    setLedger(ledger);
+      setLedger(ledger);
 
-    console.log(`current state: ${ledger}`);
+      console.log(`current state: ${ledger}`);
+      return true;
+    
   }
 
   function calculate(players: Player[]) {
@@ -65,6 +73,7 @@ const InputForm: React.FC<{}> = (props) => {
         "INVALID INPUT: entries do not sum to zero\n actual sum:  ",
         sum
       );
+      setDiscrepancy(sum);
       transactions.forEach((element) => {
         transactions.pop();
       });
@@ -156,13 +165,22 @@ const InputForm: React.FC<{}> = (props) => {
             <TransactionRow key={transaction.key} transaction={transaction} />
           );
         })}
+
+        {/* {evens && <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
+          Evens, not transactions required.
+          </div>} */}
+
+        {discrepancy && <div className=" flex bg-gray-700  rounded items-center h-6 text-red-500 text-center">
+          {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(discrepancy)}`}
+          </div>}
+
       </div>
     </div>
   );
 };
 
 const InputRow: React.FC<{
-  addPlayer: (name: string, net: number) => void;
+  addPlayer: (name: string, net: number) => boolean;
 }> = (props) => {
   const [inVal, setInVal] = useState(0);
   const [outVal, setOutVal] = useState(0);
@@ -170,8 +188,7 @@ const InputRow: React.FC<{
   const [locked, setLocked] = useState(false);
 
   function buttonClick(name: string, net: number, currState: boolean): boolean {
-    props.addPlayer(name, net);
-    return true;
+    return props.addPlayer(name, net);
   }
 
   return (
@@ -207,14 +224,14 @@ const InputRow: React.FC<{
         id="netVal"
         className=" bg-gray-400 rounded w-20 h-6 mx-1 px-2 text-gray-700"
       >
-        {Math.round((outVal - inVal) * 100) / 100}
+        {convertToPence(outVal - inVal) / 100}
       </div>
 
       <button
         className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 disabled:bg-gray-700 disabled:border-none"
         onClick={(e) => {
           setLocked(
-            buttonClick(playerName, Math.round((outVal - inVal) * 100), locked)
+            buttonClick(playerName, convertToPence(outVal - inVal), locked)
           );
         }}
         disabled = {locked}
@@ -234,7 +251,7 @@ const TransactionRow: React.FC<{
       <div className=" flex ">From: {props.transaction.from}</div>
       <div className=" flex  p-2">To: {props.transaction.to}</div>
       <div className=" flex  p-2">
-        Amount: £{Number(props.transaction.val / 100).toFixed(2)}
+        Amount: £{convertToPounds(props.transaction.val)}
       </div>
     </div>
   );
