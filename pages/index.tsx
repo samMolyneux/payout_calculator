@@ -4,7 +4,6 @@ import { convertToPence, convertToPounds } from "../scripts/util";
 
 export default function Home() {
   return (
-    
     <div className="h-screen w-screen flex flex-col justify-center items-center">
       {/* <div className="py-2"></div> */}
       <div className="text-2xl text-center">payout_calculator</div>
@@ -27,7 +26,6 @@ interface Transaction {
 }
 
 const InputForm: React.FC<{}> = (props) => {
-  
   let transactions: Transaction[] = new Array();
   const [ledger, setLedger] = useState<Player[]>([]);
   const [output, setOutput] = useState<Transaction[]>([]);
@@ -35,18 +33,17 @@ const InputForm: React.FC<{}> = (props) => {
 
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
-    if (ledger.some((item) => (item.name === playerName))){
+    if (ledger.some((item) => item.name === playerName)) {
       console.log("NAME ALREADY ENTERED ERROR");
       return false;
     }
-  
-      ledger.push({ name: playerName, net: net });
-    
-      setLedger(ledger);
 
-      console.log(`current state: ${ledger}`);
-      return true;
-    
+    ledger.push({ name: playerName, net: net });
+
+    setLedger(ledger);
+
+    console.log(`current state: ${ledger}`);
+    return true;
   }
 
   function calculate(players: Player[]) {
@@ -156,10 +153,10 @@ const InputForm: React.FC<{}> = (props) => {
       >
         Calculate
       </button>
-      <div className="p-2 items-center">{transactions.length?"Simplified Transactions:":""}</div>
+      <div className="p-2 items-center">
+        {transactions.length ? "Simplified Transactions:" : ""}
+      </div>
       <div className="flex flex-col w-full max-w-2xl">
-      
-        
         {output.map((transaction) => {
           return (
             <TransactionRow key={transaction.key} transaction={transaction} />
@@ -170,10 +167,13 @@ const InputForm: React.FC<{}> = (props) => {
           Evens, not transactions required.
           </div>} */}
 
-        {discrepancy && <div className=" flex bg-gray-700  rounded items-center h-6 text-red-500 text-center">
-          {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(discrepancy)}`}
-          </div>}
-
+        {discrepancy && (
+          <div className=" flex bg-gray-700  rounded items-center h-6 text-red-500 text-center">
+            {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
+              discrepancy
+            )}`}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -234,9 +234,9 @@ const InputRow: React.FC<{
             buttonClick(playerName, convertToPence(outVal - inVal), locked)
           );
         }}
-        disabled = {locked}
+        disabled={locked}
       >
-        {locked?"Confirmed":"Add Player"}
+        {locked ? "Confirmed" : "Add Player"}
       </button>
     </div>
   );

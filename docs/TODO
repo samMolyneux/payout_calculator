@@ -3,4 +3,4 @@ Add button to add additional players - bring state up here?
 > Add validation feedback for no matching names
 Add refresh button that replaces the Calculate button
 Split code into different files - need to decide/research options
-Warnings in console
+Warnings in console + NaN thing
