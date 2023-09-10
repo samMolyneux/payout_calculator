@@ -10,7 +10,7 @@ import TransactionRow from "./TransactionRow";
 const InputForm: React.FC<{}> = (props) => {
   let transactions: Transaction[] = new Array();
   const [ledger, setLedger] = useState<Player[]>([
-    { name: "test", id: 0 } as Player,
+    { name: "test", id: 0, net: 0 } as Player,
   ]);
   const [output, setOutput] = useState<Transaction[]>([]);
   const [discrepancy, setDiscrepancy] = useState<number>();
@@ -23,16 +23,30 @@ const InputForm: React.FC<{}> = (props) => {
     //   return false;
     // }
 
-    setLedger([...ledger, { id: playerCount } as Player]);
+    setLedger([...ledger, { id: playerCount, net: 0 } as Player]);
     setPlayerCount(playerCount + 1);
     return true;
   }
 
+  const checkDuplicateName = (name: string, id: number) => {
+    console.log(`new name: ${name}`);
+    console.log(ledger);
+    console.log(
+      ledger.some((player) => {
+        player.name === name;
+      })
+    );
+    return ledger.some((player) => player.name === name && player.id != id);
+  };
+
   const setPlayer = (index: number, newVal: Player) => {
+    const validatedVal = {
+      ...newVal,
+      invalid: checkDuplicateName(newVal.name, newVal.id),
+    };
     const newLedger = ledger.map((player, i) => {
       if (i === index) {
-        // Increment the clicked counter
-        return newVal;
+        return validatedVal;
       } else {
         // The rest haven't changed
         return player;

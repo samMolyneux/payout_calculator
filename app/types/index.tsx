@@ -2,6 +2,7 @@ interface Player {
   id: number;
   name: string;
   net: number;
+  invalid: boolean;
 }
 
 interface Transaction {
