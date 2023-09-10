@@ -1,5 +1,6 @@
-import type React from "react";
-import InputForm from "./home/InputForm";
+"use client";
+import React from "react";
+import InputForm from "./pages/home/InputForm";
 
 export default function Home() {
   return (
