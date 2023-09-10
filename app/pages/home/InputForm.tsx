@@ -1,45 +1,31 @@
-import type React from "react";
+"use client";
+import React from "react";
 import { useState } from "react";
+import { Player, Transaction } from "../../types/index";
+import { convertToPounds } from "../../scripts/util";
 
-export default function Home() {
-  return (
-    
-    <div className="h-screen w-screen flex flex-col justify-center items-center">
-      <div className="text-2xl text-center">payout_calculator</div>
-      <div className="p-2"></div>
-      <InputForm />
-    </div>
-  );
-}
-
-interface Player {
-  name: string;
-  net: number;
-}
-
-interface Transaction {
-  from: string;
-  to: string;
-  val: number;
-  key: string;
-}
+import InputRow from "./InputRow";
+import TransactionRow from "./TransactionRow";
 
 const InputForm: React.FC<{}> = (props) => {
-  let numPlayers = 0;
-  const [ledger, setLedger] = useState<Player[]>([]);
   let transactions: Transaction[] = new Array();
+  const [ledger, setLedger] = useState<Player[]>([]);
   const [output, setOutput] = useState<Transaction[]>([]);
+  const [discrepancy, setDiscrepancy] = useState<number>();
 
   function addPlayer(playerName: string, net: number) {
     console.log("playerName:", playerName, " net: ", net);
-    
+    if (ledger.some((item) => item.name === playerName)) {
+      console.log("NAME ALREADY ENTERED ERROR");
+      return false;
+    }
+
     ledger.push({ name: playerName, net: net });
-    numPlayers++;
-    
+
     setLedger(ledger);
 
-    console.log("current state: ");
-    console.log(ledger);
+    console.log(`current state: ${ledger}`);
+    return true;
   }
 
   function calculate(players: Player[]) {
@@ -66,6 +52,7 @@ const InputForm: React.FC<{}> = (props) => {
         "INVALID INPUT: entries do not sum to zero\n actual sum:  ",
         sum
       );
+      setDiscrepancy(sum);
       transactions.forEach((element) => {
         transactions.pop();
       });
@@ -148,95 +135,29 @@ const InputForm: React.FC<{}> = (props) => {
       >
         Calculate
       </button>
-      <div className="p-2 items-center">{transactions.length?"Simplified Transactions:":""}</div>
+      <div className="p-2 items-center">
+        {transactions.length ? "Simplified Transactions:" : ""}
+      </div>
       <div className="flex flex-col w-full max-w-2xl">
-      
-        
         {output.map((transaction) => {
           return (
             <TransactionRow key={transaction.key} transaction={transaction} />
           );
         })}
+
+        {/* {evens && <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
+            Evens, not transactions required.
+            </div>} */}
+
+        {discrepancy && (
+          <div className=" flex bg-gray-700  rounded items-center h-6 text-red-500 text-center">
+            {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
+              discrepancy
+            )}`}
+          </div>
+        )}
       </div>
     </div>
   );
 };
-
-const InputRow: React.FC<{
-  addPlayer: (name: string, net: number) => void;
-}> = (props) => {
-  const [inVal, setInVal] = useState(0);
-  const [outVal, setOutVal] = useState(0);
-  const [playerName, setPlayerName] = useState("");
-  const [locked, setLocked] = useState(false);
-
-  function buttonClick(name: string, net: number, currState: boolean): boolean {
-    props.addPlayer(name, net);
-    return true;
-  }
-
-  return (
-    <div className=" flex bg-gray-700 p-1 my-2 rounded items-center">
-      <input
-        type="text"
-        id="playerName"
-        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1 disabled:bg-gray-700"
-        onChange={(e) => setPlayerName(e.target.value)}
-        disabled={locked}
-      ></input>
-      <input
-        type="number"
-        id="inVal"
-        name="inVal"
-        step="0.01"
-        value={inVal}
-        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1 disabled:bg-gray-700"
-        onChange={(e) => setInVal(e.target.valueAsNumber)}
-        disabled={locked}
-      ></input>
-      <input
-        type="number"
-        id="outVal"
-        step="0.01"
-        value={outVal}
-        className=" bg-gray-600 p-2  rounded w-20 h-6 mx-1 disabled:bg-gray-700"
-        onChange={(e) => setOutVal(e.target.valueAsNumber)}
-        disabled={locked}
-      ></input>
-
-      <div
-        id="netVal"
-        className=" bg-gray-400 rounded w-20 h-6 mx-1 px-2 text-gray-700"
-      >
-        {Math.round((outVal - inVal) * 100) / 100}
-      </div>
-
-      <button
-        className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 disabled:bg-gray-700 disabled:border-none"
-        onClick={(e) => {
-          setLocked(
-            buttonClick(playerName, Math.round((outVal - inVal) * 100), locked)
-          );
-        }}
-        disabled = {locked}
-      >
-        {locked?"Confirmed":"Add Player"}
-      </button>
-    </div>
-  );
-};
-
-const TransactionRow: React.FC<{
-  transaction: Transaction;
-  key: string;
-}> = (props) => {
-  return (
-    <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
-      <div className=" flex ">From: {props.transaction.from}</div>
-      <div className=" flex  p-2">To: {props.transaction.to}</div>
-      <div className=" flex  p-2">
-        Amount: £{Number(props.transaction.val / 100).toFixed(2)}
-      </div>
-    </div>
-  );
-};
+export default InputForm;
