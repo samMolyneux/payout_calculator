@@ -1,4 +1,5 @@
 interface Player {
+  id: number;
   name: string;
   net: number;
 }

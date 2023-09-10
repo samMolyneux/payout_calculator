@@ -9,24 +9,37 @@ import TransactionRow from "./TransactionRow";
 
 const InputForm: React.FC<{}> = (props) => {
   let transactions: Transaction[] = new Array();
-  const [ledger, setLedger] = useState<Player[]>([]);
+  const [ledger, setLedger] = useState<Player[]>([
+    { name: "test", id: 0 } as Player,
+  ]);
   const [output, setOutput] = useState<Transaction[]>([]);
   const [discrepancy, setDiscrepancy] = useState<number>();
+  const [playerCount, setPlayerCount] = useState(1);
 
-  function addPlayer(playerName: string, net: number) {
-    console.log("playerName:", playerName, " net: ", net);
-    if (ledger.some((item) => item.name === playerName)) {
-      console.log("NAME ALREADY ENTERED ERROR");
-      return false;
-    }
+  function addPlayer() {
+    // console.log("playerName:", playerName, " net: ", net);
+    // if (ledger.some((item) => item.name === playerName)) {
+    //   console.log("NAME ALREADY ENTERED ERROR");
+    //   return false;
+    // }
 
-    ledger.push({ name: playerName, net: net });
-
-    setLedger(ledger);
-
-    console.log(`current state: ${ledger}`);
+    setLedger([...ledger, { id: playerCount } as Player]);
+    setPlayerCount(playerCount + 1);
     return true;
   }
+
+  const setPlayer = (index: number, newVal: Player) => {
+    const newLedger = ledger.map((player, i) => {
+      if (i === index) {
+        // Increment the clicked counter
+        return newVal;
+      } else {
+        // The rest haven't changed
+        return player;
+      }
+    });
+    setLedger(newLedger);
+  };
 
   function calculate(players: Player[]) {
     console.log("current players: ");
@@ -38,9 +51,9 @@ const InputForm: React.FC<{}> = (props) => {
     players.forEach((player) => {
       sum = sum + player.net;
       if (player.net > 0) {
-        positives.push({ name: player.name, net: player.net });
+        positives.push(player);
       } else if (player.net < 0) {
-        negatives.push({ name: player.name, net: player.net });
+        negatives.push(player);
       } else {
         console.log("evens");
         return;
@@ -115,18 +128,20 @@ const InputForm: React.FC<{}> = (props) => {
         <div className="flex w-20 h-6 mx-1 p-2 justify-center"></div>
       </div>
 
-      {/* A player element */}
+      {ledger.map((player, index) => (
+        <InputRow
+          key={player.id}
+          player={player}
+          onChange={(newVal) => setPlayer(index, newVal)}
+        ></InputRow>
+      ))}
 
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-      <InputRow addPlayer={addPlayer} />
-
+      <button
+        className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
+        onClick={() => addPlayer()}
+      >
+        +
+      </button>
       <div className="p-2"></div>
 
       <button
