@@ -10,11 +10,13 @@ import TransactionRow from "./TransactionRow";
 const InputForm: React.FC<{}> = (props) => {
   let transactions: Transaction[] = new Array();
   const [ledger, setLedger] = useState<Player[]>([
-    { name: "test", id: 0, net: 0 } as Player,
+    { name: "", id: 0, net: 0 } as Player,
   ]);
   const [output, setOutput] = useState<Transaction[]>([]);
   const [discrepancy, setDiscrepancy] = useState<number>();
   const [playerCount, setPlayerCount] = useState(1);
+  const [calculated, setCalculated] = useState(false);
+  const [evens, setEvens] = useState(false);
 
   function addPlayer() {
     // console.log("playerName:", playerName, " net: ", net);
@@ -55,12 +57,18 @@ const InputForm: React.FC<{}> = (props) => {
     setLedger(newLedger);
   };
 
+  function refresh() {
+    window.location.reload();
+  }
+
   function calculate(players: Player[]) {
     console.log("current players: ");
     console.log(players);
     let sum = 0;
     let positives: Player[] = new Array();
     let negatives: Player[] = new Array();
+
+    setCalculated(true);
 
     players.forEach((player) => {
       sum = sum + player.net;
@@ -69,6 +77,7 @@ const InputForm: React.FC<{}> = (props) => {
       } else if (player.net < 0) {
         negatives.push(player);
       } else {
+        setEvens(true);
         console.log("evens");
         return;
       }
@@ -139,7 +148,6 @@ const InputForm: React.FC<{}> = (props) => {
         <div className=" flex p-2 text-gray-600 rounded w-20 h-6 mx-1 justify-center">
           Net
         </div>
-        <div className="flex w-20 h-6 mx-1 p-2 justify-center"></div>
       </div>
 
       {ledger.map((player, index) => (
@@ -147,39 +155,52 @@ const InputForm: React.FC<{}> = (props) => {
           key={player.id}
           player={player}
           onChange={(newVal) => setPlayer(index, newVal)}
+          locked={calculated}
         ></InputRow>
       ))}
 
       <button
-        className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
+        className="w-10 h-10 flex items-center justify-center border bg-gray-600 font-medium rounded hover:font-bold active:border-gray-400 active:text-gray-400 disabled:border-none"
         onClick={() => addPlayer()}
+        disabled={calculated}
       >
         +
       </button>
       <div className="p-2"></div>
 
-      <button
-        className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
-        onClick={() => calculate(ledger)}
-      >
-        Calculate
-      </button>
+      {calculated ? (
+        <button
+          className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
+          onClick={() => refresh()}
+        >
+          Refresh
+        </button>
+      ) : (
+        <button
+          className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
+          onClick={() => calculate(ledger)}
+        >
+          Calculate
+        </button>
+      )}
       <div className="p-2 items-center">
         {transactions.length ? "Simplified Transactions:" : ""}
       </div>
-      <div className="flex flex-col w-full max-w-2xl">
+      <div className="flex ">
         {output.map((transaction) => {
           return (
             <TransactionRow key={transaction.key} transaction={transaction} />
           );
         })}
 
-        {/* {evens && <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
-            Evens, not transactions required.
-            </div>} */}
+        {evens && (
+          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 h-6">
+            Evens, no transactions required.
+          </div>
+        )}
 
         {discrepancy && (
-          <div className=" flex bg-gray-700  rounded items-center h-6 text-red-500 text-center">
+          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 h-6 text-red-500">
             {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
               discrepancy
             )}`}
