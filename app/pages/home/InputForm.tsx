@@ -193,7 +193,7 @@ const InputForm: React.FC<{}> = (props) => {
           );
         })}
 
-        {evens && (
+        {evens && !discrepancy && (
           <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80">
             Evens, no transactions required.
           </div>
