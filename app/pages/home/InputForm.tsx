@@ -77,7 +77,6 @@ const InputForm: React.FC<{}> = (props) => {
       } else if (player.net < 0) {
         negatives.push(player);
       } else {
-        setEvens(true);
         console.log("evens");
         return;
       }
@@ -129,7 +128,11 @@ const InputForm: React.FC<{}> = (props) => {
         );
       });
     }
-    setOutput(transactions);
+    if (transactions.length == 0) {
+      setEvens(true);
+    } else {
+      setOutput(transactions);
+    }
     console.log("Transactions: ", transactions);
   }
   return (
