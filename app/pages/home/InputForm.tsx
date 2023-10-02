@@ -194,13 +194,13 @@ const InputForm: React.FC<{}> = (props) => {
         })}
 
         {evens && (
-          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 h-6">
+          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80">
             Evens, no transactions required.
           </div>
         )}
 
         {discrepancy && (
-          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 h-6 text-red-500">
+          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 text-red-500">
             {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
               discrepancy
             )}`}
