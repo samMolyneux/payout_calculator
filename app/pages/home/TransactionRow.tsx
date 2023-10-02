@@ -8,7 +8,7 @@ const TransactionRow: React.FC<{
   key: string;
 }> = (props) => {
   return (
-    <div className=" flex bg-gray-700 p-1 my-2 rounded items-center h-6">
+    <div className=" flex bg-gray-700 p-1 my-2 rounded items-center">
       <div className=" flex ">From: {props.transaction.from}</div>
       <div className=" flex  p-2">To: {props.transaction.to}</div>
       <div className=" flex  p-2">
