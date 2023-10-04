@@ -189,27 +189,25 @@ const InputForm: React.FC<{}> = (props) => {
       <div className="p-2 items-center">
         {transactions.length ? "Simplified Transactions:" : ""}
       </div>
-      <div className="flex ">
-        {output.map((transaction) => {
-          return (
-            <TransactionRow key={transaction.key} transaction={transaction} />
-          );
-        })}
+      {output.map((transaction) => {
+        return (
+          <TransactionRow key={transaction.key} transaction={transaction} />
+        );
+      })}
 
-        {evens && !discrepancy && (
-          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80">
-            Evens, no transactions required.
-          </div>
-        )}
+      {evens && !discrepancy && (
+        <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80">
+          Evens, no transactions required.
+        </div>
+      )}
 
-        {discrepancy && (
-          <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 text-red-500">
-            {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
-              discrepancy
-            )}`}
-          </div>
-        )}
-      </div>
+      {discrepancy && (
+        <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 text-red-500">
+          {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
+            discrepancy
+          )}`}
+        </div>
+      )}
     </div>
   );
 };
