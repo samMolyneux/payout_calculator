@@ -1,1 +1,1 @@
-App to simplify poker homegame debts
+App to simplify poker cash game payouts
