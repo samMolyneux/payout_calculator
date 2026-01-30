@@ -5,7 +5,7 @@ import { Player, Transaction } from "../../types/index";
 import { convertToPounds } from "../../scripts/util";
 
 import InputRow from "./InputRow";
-import TransactionRow from "./TransactionRow";
+import TransactionTable from "./TransactionTable";
 
 const InputForm: React.FC<{}> = (props) => {
   let transactions: Transaction[] = new Array();
@@ -142,16 +142,16 @@ const InputForm: React.FC<{}> = (props) => {
     <div className="flex flex-col justify-center items-center">
       {/* labels */}
       <div className=" flex p-1 my-1 rounded">
-        <div className=" flex p-2 text-gray-600 rounded w-20 h-6 mx-1 justify-center">
+        <div className=" flex p-2 text-gray-400 rounded w-20 h-6 mx-1 justify-center">
           Name
         </div>
-        <div className=" flex p-2 text-gray-600 rounded w-20 h-6 mx-1 justify-center">
+        <div className=" flex p-2 text-gray-400 rounded w-20 h-6 mx-1 justify-center">
           In
         </div>
-        <div className=" flex p-2 text-gray-600 rounded w-20 h-6 mx-1 justify-center">
+        <div className=" flex p-2 text-gray-400 rounded w-20 h-6 mx-1 justify-center">
           Out
         </div>
-        <div className=" flex p-2 text-gray-600 rounded w-20 h-6 mx-1 justify-center">
+        <div className=" flex p-2 text-gray-400 rounded w-20 h-6 mx-1 justify-center">
           Net
         </div>
       </div>
@@ -167,37 +167,30 @@ const InputForm: React.FC<{}> = (props) => {
 
       {!calculated && (
         <button
-          className="w-10 h-10 flex items-center justify-center border bg-gray-600 font-medium rounded hover:font-bold active:border-gray-400 active:text-gray-400"
+          className="w-8 h-8 flex items-center justify-center text-sm bg-gray-600 hover:bg-gray-500 rounded transition-colors"
           onClick={() => addPlayer()}
         >
           +
         </button>
       )}
-      <div className="p-2"></div>
-
-      {calculated ? (
-        <button
-          className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
-          onClick={() => refresh()}
-        >
-          Edit
-        </button>
-      ) : (
-        <button
-          className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
-          onClick={() => calculate(ledger)}
-        >
-          Calculate
-        </button>
-      )}
-      <div className="p-2 items-center">
-        {transactions.length ? "Simplified Transactions:" : ""}
+      <div className="py-2">
+        {calculated ? (
+          <button
+            className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+            onClick={() => refresh()}
+          >
+            Edit
+          </button>
+        ) : (
+          <button
+            className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+            onClick={() => calculate(ledger)}
+          >
+            Calculate
+          </button>
+        )}
       </div>
-      {output.map((transaction) => {
-        return (
-          <TransactionRow key={transaction.key} transaction={transaction} />
-        );
-      })}
+      <TransactionTable transactions={output} />
 
       {evens && !discrepancy && (
         <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80">
