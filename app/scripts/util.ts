@@ -1,6 +1,6 @@
 export const calcNet: (inVal: number, outVal: number) => number = (
-  outVal,
-  inVal
+  inVal,
+  outVal
 ) => {
   return outVal - inVal;
 };

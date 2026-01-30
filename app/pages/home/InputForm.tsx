@@ -73,9 +73,9 @@ const InputForm: React.FC<{}> = (props) => {
     players.forEach((player) => {
       sum = sum + player.net;
       if (player.net > 0) {
-        positives.push(player);
+        positives.push({ ...player });
       } else if (player.net < 0) {
-        negatives.push(player);
+        negatives.push({ ...player });
       } else {
         console.log("evens");
         return;
