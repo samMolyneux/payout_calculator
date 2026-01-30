@@ -58,7 +58,10 @@ const InputForm: React.FC<{}> = (props) => {
   };
 
   function refresh() {
-    window.location.reload();
+    setCalculated(false);
+    setOutput([]);
+    setDiscrepancy(undefined);
+    setEvens(false);
   }
 
   function calculate(players: Player[]) {
@@ -162,13 +165,14 @@ const InputForm: React.FC<{}> = (props) => {
         ></InputRow>
       ))}
 
-      <button
-        className="w-10 h-10 flex items-center justify-center border bg-gray-600 font-medium rounded hover:font-bold active:border-gray-400 active:text-gray-400 disabled:border-none"
-        onClick={() => addPlayer()}
-        disabled={calculated}
-      >
-        +
-      </button>
+      {!calculated && (
+        <button
+          className="w-10 h-10 flex items-center justify-center border bg-gray-600 font-medium rounded hover:font-bold active:border-gray-400 active:text-gray-400"
+          onClick={() => addPlayer()}
+        >
+          +
+        </button>
+      )}
       <div className="p-2"></div>
 
       {calculated ? (
@@ -176,7 +180,7 @@ const InputForm: React.FC<{}> = (props) => {
           className="p-2 flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400"
           onClick={() => refresh()}
         >
-          Refresh
+          Edit
         </button>
       ) : (
         <button
