@@ -18,6 +18,7 @@ const InputForm: React.FC<{}> = (props) => {
   const [calculated, setCalculated] = useState(false);
   const [evens, setEvens] = useState(false);
   const [error, setError] = useState(false);
+  const [showAdjusted, setShowAdjusted] = useState(false);
 
   function addPlayer() {
     // console.log("playerName:", playerName, " net: ", net);
@@ -64,6 +65,9 @@ const InputForm: React.FC<{}> = (props) => {
     setDiscrepancy(undefined);
     setEvens(false);
     setError(false);
+    setShowAdjusted(false);
+    // Clear adjustedNet from all players
+    setLedger(ledger.map(player => ({ ...player, adjustedNet: undefined })));
   }
 
   function splitDiscrepancy() {
@@ -115,16 +119,20 @@ const InputForm: React.FC<{}> = (props) => {
     // Final split amount (recalculate one more time with the final set)
     const finalSplitAmount = Math.round(discrepancy / eligibleWinners.length);
 
-    // Create a new ledger with adjusted values
+    // Create a new ledger with adjustedNet values (keeping original net intact)
     const adjustedLedger = ledger.map((player) => {
       const isEligibleWinner = eligibleWinners.some((w) => w.id === player.id);
       if (isEligibleWinner) {
         return {
           ...player,
-          net: player.net - finalSplitAmount,
+          adjustedNet: player.net - finalSplitAmount,
         };
       }
-      return player;
+      // Non-winners keep their original net as adjustedNet
+      return {
+        ...player,
+        adjustedNet: player.net,
+      };
     });
 
     // Calculate the actual total adjustment (may differ slightly due to rounding)
@@ -139,17 +147,24 @@ const InputForm: React.FC<{}> = (props) => {
       if (firstWinnerIndex !== -1) {
         adjustedLedger[firstWinnerIndex] = {
           ...adjustedLedger[firstWinnerIndex],
-          net: adjustedLedger[firstWinnerIndex].net - remainingDiscrepancy,
+          adjustedNet: (adjustedLedger[firstWinnerIndex].adjustedNet ?? adjustedLedger[firstWinnerIndex].net) - remainingDiscrepancy,
         };
       }
     }
 
-    // Update ledger with adjusted values
+    // Update ledger with adjusted values and show the Adjusted column
     setLedger(adjustedLedger);
+    setShowAdjusted(true);
 
-    // Clear discrepancy and recalculate
+    // Clear discrepancy and recalculate using adjustedNet values
     setDiscrepancy(undefined);
-    calculate(adjustedLedger);
+
+    // Create a temporary ledger with net values replaced by adjustedNet for calculation
+    const ledgerForCalculation = adjustedLedger.map(player => ({
+      ...player,
+      net: player.adjustedNet ?? player.net,
+    }));
+    calculate(ledgerForCalculation);
   }
 
   function calculate(players: Player[]) {
@@ -251,6 +266,11 @@ const InputForm: React.FC<{}> = (props) => {
         <div className=" flex p-2 text-gray-400 rounded w-20 h-6 mx-1 justify-center">
           Net
         </div>
+        {showAdjusted && (
+          <div className=" flex p-2 text-gray-400 rounded w-20 h-6 mx-1 justify-center">
+            Adjusted
+          </div>
+        )}
       </div>
 
       {ledger.map((player, index) => (
@@ -259,6 +279,7 @@ const InputForm: React.FC<{}> = (props) => {
           player={player}
           onChange={(newVal) => setPlayer(index, newVal)}
           locked={calculated}
+          showAdjusted={showAdjusted}
         ></InputRow>
       ))}
 

@@ -8,10 +8,11 @@ const InputRow: React.FC<{
   player: Player;
   onChange: (newVal: Player) => void;
   locked: boolean;
+  showAdjusted?: boolean;
 }> = (props) => {
   const [inVal, setInVal] = useState(0);
   const [outVal, setOutVal] = useState(0);
-  const { locked } = props;
+  const { locked, showAdjusted } = props;
   function onNetChange(inVal: number, outVal: number) {
     const newNet = convertToPence(outVal - inVal);
     props.onChange({ ...props.player, net: newNet });
@@ -68,6 +69,14 @@ const InputRow: React.FC<{
         >
           {props.player.net ? convertToPounds(props.player.net) : null}
         </div>
+        {showAdjusted && (
+          <div
+            id="adjustedNetVal"
+            className=" bg-green-600 rounded w-20 h-6 mx-1 px-2 text-white"
+          >
+            {props.player.adjustedNet !== undefined ? convertToPounds(props.player.adjustedNet) : null}
+          </div>
+        )}
         {/* <button
           className="p-2 content-center flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 disabled:bg-gray-700 disabled:border-none"
           onClick={(e) => {

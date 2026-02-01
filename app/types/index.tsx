@@ -3,6 +3,7 @@ interface Player {
   name: string;
   net: number;
   invalid: boolean;
+  adjustedNet?: number;
 }
 
 interface Transaction {
