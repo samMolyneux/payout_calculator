@@ -17,6 +17,7 @@ const InputForm: React.FC<{}> = (props) => {
   const [playerCount, setPlayerCount] = useState(1);
   const [calculated, setCalculated] = useState(false);
   const [evens, setEvens] = useState(false);
+  const [error, setError] = useState(false);
 
   function addPlayer() {
     // console.log("playerName:", playerName, " net: ", net);
@@ -62,6 +63,7 @@ const InputForm: React.FC<{}> = (props) => {
     setOutput([]);
     setDiscrepancy(undefined);
     setEvens(false);
+    setError(false);
   }
 
   function splitDiscrepancy() {
@@ -73,12 +75,15 @@ const InputForm: React.FC<{}> = (props) => {
     if (eligibleWinners.length === 0) {
       // No winners to split among, cannot proceed
       console.log("No winners to split discrepancy among");
+      setError(true);
       return;
     }
 
     // Iteratively remove winners who can't afford the split until we have a stable set
     let splitAmount = 0;
     let previousEligibleCount = 0;
+    let iterations = 0;
+    const maxIterations = ledger.length; // Can't remove more players than exist
 
     while (eligibleWinners.length > 0 && eligibleWinners.length !== previousEligibleCount) {
       previousEligibleCount = eligibleWinners.length;
@@ -90,11 +95,20 @@ const InputForm: React.FC<{}> = (props) => {
       eligibleWinners = eligibleWinners.filter((winner) => {
         return winner.net - splitAmount >= 0;
       });
+
+      iterations++;
+      if (iterations >= maxIterations) {
+        // Infinite loop detected, something went wrong
+        console.error("Max iterations reached in splitDiscrepancy, potential infinite loop");
+        setError(true);
+        return;
+      }
     }
 
     if (eligibleWinners.length === 0) {
       // No eligible winners after iterative filtering, cannot proceed
       console.log("No eligible winners after filtering those who would go negative");
+      setError(true);
       return;
     }
 
@@ -294,6 +308,12 @@ const InputForm: React.FC<{}> = (props) => {
           >
             Split Discrepancy
           </button>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex bg-red-700 p-2 my-2 rounded text-center justify-center w-80">
+          Something went wrong. Please check your inputs and try again.
         </div>
       )}
     </div>
