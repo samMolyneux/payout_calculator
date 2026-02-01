@@ -68,29 +68,37 @@ const InputForm: React.FC<{}> = (props) => {
     if (!discrepancy) return;
 
     // Find all winners (players with positive net)
-    const winners = ledger.filter((player) => player.net > 0);
+    let eligibleWinners = ledger.filter((player) => player.net > 0);
 
-    if (winners.length === 0) {
+    if (eligibleWinners.length === 0) {
       // No winners to split among, cannot proceed
       console.log("No winners to split discrepancy among");
       return;
     }
 
-    // Calculate how much each winner would need to contribute (to nearest 0.01)
-    const splitAmount = Math.round(discrepancy / winners.length);
+    // Iteratively remove winners who can't afford the split until we have a stable set
+    let splitAmount = 0;
+    let previousEligibleCount = 0;
 
-    // Filter out winners who would go negative after the split
-    const eligibleWinners = winners.filter((winner) => {
-      return winner.net - splitAmount >= 0;
-    });
+    while (eligibleWinners.length > 0 && eligibleWinners.length !== previousEligibleCount) {
+      previousEligibleCount = eligibleWinners.length;
+
+      // Calculate how much each eligible winner would need to contribute (to nearest penny)
+      splitAmount = Math.round(discrepancy / eligibleWinners.length);
+
+      // Filter out winners who would go negative after this split
+      eligibleWinners = eligibleWinners.filter((winner) => {
+        return winner.net - splitAmount >= 0;
+      });
+    }
 
     if (eligibleWinners.length === 0) {
-      // No eligible winners, cannot proceed
+      // No eligible winners after iterative filtering, cannot proceed
       console.log("No eligible winners after filtering those who would go negative");
       return;
     }
 
-    // Recalculate split among eligible winners only
+    // Final split amount (recalculate one more time with the final set)
     const finalSplitAmount = Math.round(discrepancy / eligibleWinners.length);
 
     // Create a new ledger with adjusted values
