@@ -303,7 +303,7 @@ const InputForm: React.FC<{}> = (props) => {
             )}`}
           </div>
           <button
-            className="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded transition-colors"
+            className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
             onClick={() => splitDiscrepancy()}
           >
             Split Discrepancy
