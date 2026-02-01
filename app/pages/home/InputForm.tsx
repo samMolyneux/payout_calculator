@@ -64,6 +64,72 @@ const InputForm: React.FC<{}> = (props) => {
     setEvens(false);
   }
 
+  function splitDiscrepancy() {
+    if (!discrepancy) return;
+
+    // Find all winners (players with positive net)
+    const winners = ledger.filter((player) => player.net > 0);
+
+    if (winners.length === 0) {
+      // No winners to split among, cannot proceed
+      console.log("No winners to split discrepancy among");
+      return;
+    }
+
+    // Calculate how much each winner would need to contribute (to nearest 0.01)
+    const splitAmount = Math.round(discrepancy / winners.length);
+
+    // Filter out winners who would go negative after the split
+    const eligibleWinners = winners.filter((winner) => {
+      return winner.net - splitAmount >= 0;
+    });
+
+    if (eligibleWinners.length === 0) {
+      // No eligible winners, cannot proceed
+      console.log("No eligible winners after filtering those who would go negative");
+      return;
+    }
+
+    // Recalculate split among eligible winners only
+    const finalSplitAmount = Math.round(discrepancy / eligibleWinners.length);
+
+    // Create a new ledger with adjusted values
+    const adjustedLedger = ledger.map((player) => {
+      const isEligibleWinner = eligibleWinners.some((w) => w.id === player.id);
+      if (isEligibleWinner) {
+        return {
+          ...player,
+          net: player.net - finalSplitAmount,
+        };
+      }
+      return player;
+    });
+
+    // Calculate the actual total adjustment (may differ slightly due to rounding)
+    const totalAdjustment = finalSplitAmount * eligibleWinners.length;
+
+    // If there's still a small discrepancy due to rounding, adjust the first eligible winner
+    const remainingDiscrepancy = discrepancy - totalAdjustment;
+    if (remainingDiscrepancy !== 0 && eligibleWinners.length > 0) {
+      const firstWinnerIndex = adjustedLedger.findIndex(
+        (p) => p.id === eligibleWinners[0].id
+      );
+      if (firstWinnerIndex !== -1) {
+        adjustedLedger[firstWinnerIndex] = {
+          ...adjustedLedger[firstWinnerIndex],
+          net: adjustedLedger[firstWinnerIndex].net - remainingDiscrepancy,
+        };
+      }
+    }
+
+    // Update ledger with adjusted values
+    setLedger(adjustedLedger);
+
+    // Clear discrepancy and recalculate
+    setDiscrepancy(undefined);
+    calculate(adjustedLedger);
+  }
+
   function calculate(players: Player[]) {
     console.log("current players: ");
     console.log(players);
@@ -208,10 +274,18 @@ const InputForm: React.FC<{}> = (props) => {
       )}
 
       {discrepancy && (
-        <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 text-red-500">
-          {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
-            discrepancy
-          )}`}
+        <div className="flex flex-col items-center gap-2 my-2">
+          <div className="flex bg-gray-700 p-1 rounded text-center justify-center w-80 text-red-500">
+            {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
+              discrepancy
+            )}`}
+          </div>
+          <button
+            className="text-sm px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded transition-colors"
+            onClick={() => splitDiscrepancy()}
+          >
+            Split Discrepancy
+          </button>
         </div>
       )}
     </div>
