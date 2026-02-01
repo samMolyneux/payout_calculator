@@ -5,3 +5,13 @@
 body {
   @apply text-gray-100 bg-gray-800;
 }
+
+/* Prevent autofill from changing input background color */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px rgb(75 85 99) inset !important;
+  -webkit-text-fill-color: rgb(243 244 246) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
