@@ -3,7 +3,10 @@
   "name": "payout-calculator",
   "main": ".open-next/worker.js",
   "compatibility_date": "2025-03-01",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
   "minify": true,
   "assets": {
     "binding": "ASSETS",
@@ -14,5 +17,9 @@
     "logs": {
       "enabled": true
     }
+  },
+  "vars": {
+    "NEXT_PUBLIC_SPLITWISE_CONSUMER_KEY": "yTWH3aXOJ7H520PgiTvkk5FKkUVavEBuJWmYzfQE",
+    "NEXT_PUBLIC_SPLITWISE_REDIRECT_URI": "https://your-domain.com/api/splitwise/auth"
   }
 }

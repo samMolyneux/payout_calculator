@@ -1,7 +1,16 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Transaction } from "../../types/index";
 import { convertToPounds } from "../../scripts/util";
+
+const CURRENCY_CODES: Record<string, string> = {
+  "£": "GBP",
+  "$": "USD",
+  "€": "EUR",
+  "¥": "JPY",
+  "₹": "INR",
+};
 
 const currencies = [
   { symbol: "£", label: "£ GBP" },
@@ -14,6 +23,7 @@ const currencies = [
 const TransactionTable: React.FC<{
   transactions: Transaction[];
 }> = ({ transactions }) => {
+  const router = useRouter();
   const [copied, setCopied] = useState(false);
   const [currency, setCurrency] = useState("£");
 
@@ -32,6 +42,15 @@ const TransactionTable: React.FC<{
     } catch (err) {
       console.error("Failed to copy:", err);
     }
+  };
+
+  const handleSplitwiseExport = () => {
+    const data = {
+      transactions,
+      currency: CURRENCY_CODES[currency] || "GBP",
+    };
+    sessionStorage.setItem("splitwise_pending_export", JSON.stringify(data));
+    router.push("/splitwise");
   };
 
   if (transactions.length === 0) {
@@ -85,6 +104,15 @@ const TransactionTable: React.FC<{
               <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
             </svg>
           )}
+        </button>
+        <button
+          onClick={handleSplitwiseExport}
+          className="p-2 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+          title="Export to Splitwise"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+          </svg>
         </button>
       </div>
     </div>
