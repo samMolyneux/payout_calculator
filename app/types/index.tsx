@@ -1,7 +1,9 @@
 interface Player {
   id: number;
   name: string;
-  net: number;
+  in?: number;  // in pence
+  out?: number; // in pence
+  net: number;  // in pence (calculated as out - in)
   invalid: boolean;
 }
 

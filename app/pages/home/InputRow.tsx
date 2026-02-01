@@ -9,12 +9,26 @@ const InputRow: React.FC<{
   onChange: (newVal: Player) => void;
   locked: boolean;
 }> = (props) => {
-  const [inVal, setInVal] = useState(0);
-  const [outVal, setOutVal] = useState(0);
+  // Get initial values from player or default to 0
+  const [inVal, setInVal] = useState(props.player.in ? convertToPounds(props.player.in) : 0);
+  const [outVal, setOutVal] = useState(props.player.out ? convertToPounds(props.player.out) : 0);
   const { locked } = props;
+
+  // Update local state when player prop changes (e.g., from splitDiscrepancy)
+  React.useEffect(() => {
+    if (props.player.in !== undefined) {
+      setInVal(convertToPounds(props.player.in));
+    }
+    if (props.player.out !== undefined) {
+      setOutVal(convertToPounds(props.player.out));
+    }
+  }, [props.player.in, props.player.out]);
+
   function onNetChange(inVal: number, outVal: number) {
-    const newNet = convertToPence(outVal - inVal);
-    props.onChange({ ...props.player, net: newNet });
+    const inPence = convertToPence(inVal);
+    const outPence = convertToPence(outVal);
+    const newNet = outPence - inPence;
+    props.onChange({ ...props.player, in: inPence, out: outPence, net: newNet });
   }
   function onInValChange(newInVal: number) {
     setInVal(newInVal);

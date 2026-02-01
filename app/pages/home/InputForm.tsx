@@ -115,13 +115,17 @@ const InputForm: React.FC<{}> = (props) => {
     // Final split amount (recalculate one more time with the final set)
     const finalSplitAmount = Math.round(discrepancy / eligibleWinners.length);
 
-    // Create a new ledger with adjusted values
+    // Create a new ledger with adjusted values (update 'out' instead of 'net')
     const adjustedLedger = ledger.map((player) => {
       const isEligibleWinner = eligibleWinners.some((w) => w.id === player.id);
       if (isEligibleWinner) {
+        // Update the 'out' value and recalculate net
+        const newOut = (player.out || 0) - finalSplitAmount;
+        const newNet = newOut - (player.in || 0);
         return {
           ...player,
-          net: player.net - finalSplitAmount,
+          out: newOut,
+          net: newNet,
         };
       }
       return player;
@@ -137,9 +141,12 @@ const InputForm: React.FC<{}> = (props) => {
         (p) => p.id === eligibleWinners[0].id
       );
       if (firstWinnerIndex !== -1) {
+        const newOut = (adjustedLedger[firstWinnerIndex].out || 0) - remainingDiscrepancy;
+        const newNet = newOut - (adjustedLedger[firstWinnerIndex].in || 0);
         adjustedLedger[firstWinnerIndex] = {
           ...adjustedLedger[firstWinnerIndex],
-          net: adjustedLedger[firstWinnerIndex].net - remainingDiscrepancy,
+          out: newOut,
+          net: newNet,
         };
       }
     }
