@@ -9,6 +9,18 @@ export default function Home() {
       <div className="text-2xl text-center">payout_calculator</div>
       {/* <div className="py-2 px-0"></div> */}
       <InputForm />
+
+      <footer className="w-full mt-8 py-4 px-4 text-center text-sm text-gray-400 border-t border-gray-700">
+        <p>
+          To get in touch, make a feature request, or report an issue please contact me here:{" "}
+          <a
+            href="mailto:mountwebservices@gmail.com"
+            className="text-gray-300 hover:text-gray-100 underline decoration-gray-500 hover:decoration-gray-300 transition-colors duration-200"
+          >
+            mountwebservices@gmail.com
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
