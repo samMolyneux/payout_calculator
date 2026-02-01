@@ -67,13 +67,22 @@ const InputForm: React.FC<{}> = (props) => {
   function calculate(players: Player[]) {
     console.log("current players: ");
     console.log(players);
+
+    // Filter out empty rows (rows with no name or with empty name and zero net)
+    const filteredPlayers = players.filter(player => {
+      return player.name && player.name.trim() !== '';
+    });
+
+    // Update the ledger to remove empty rows
+    setLedger(filteredPlayers);
+
     let sum = 0;
     let positives: Player[] = new Array();
     let negatives: Player[] = new Array();
 
     setCalculated(true);
 
-    players.forEach((player) => {
+    filteredPlayers.forEach((player) => {
       sum = sum + player.net;
       if (player.net > 0) {
         positives.push({ ...player });
