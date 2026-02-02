@@ -28,8 +28,9 @@ export function splitDiscrepancy(
   }
 
   // For negative discrepancy (surplus), no exclusion needed - just distribute
+  // Negate to get positive adjustments (players receive money)
   if (discrepancy < 0) {
-    return distributeEvenly(players, discrepancy);
+    return distributeEvenly(players, -discrepancy);
   }
 
   // For positive discrepancy (shortfall), check for cascading exclusions

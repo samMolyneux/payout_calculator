@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { useState } from "react";
+import Link from "next/link";
 import { Player, Transaction, Adjustment } from "../../types/index";
 import { convertToPounds } from "../../scripts/util";
 import { splitDiscrepancy, applyAdjustments } from "../../scripts/discrepancyUtils";
@@ -243,7 +244,7 @@ const InputForm: React.FC<{}> = (props) => {
             }, {} as Record<number, string[]>)
           ).map(([amount, players], idx) => (
             <div key={idx}>
-              {convertToPounds(Number(amount))}: {players.join(", ")}
+              {Number(amount) > 0 ? '+' : ''}{convertToPounds(Number(amount))}: {players.join(", ")}
             </div>
           ))}
         </div>
@@ -256,12 +257,33 @@ const InputForm: React.FC<{}> = (props) => {
               ? `There is a shortfall of ${convertToPounds(discrepancy)}`
               : `There is a surplus of ${convertToPounds(Math.abs(discrepancy))}`}
           </div>
-          <button
-            className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
-            onClick={() => handleSplitDiscrepancy()}
-          >
-            Split the Discrepancy
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+              onClick={() => handleSplitDiscrepancy()}
+            >
+              Split the discrepancy
+            </button>
+            <Link
+              href="/split-the-discrepancy"
+              target="_blank"
+              className="text-gray-400 hover:text-gray-300 transition-colors"
+              title="Learn more"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-4 h-4"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 01.67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 11-.671-1.34l.041-.022zM12 9a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </Link>
+          </div>
           {splitError && (
             <div className="text-red-400 text-sm">{splitError}</div>
           )}
