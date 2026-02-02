@@ -1,8 +1,9 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import { Player, Transaction } from "../../types/index";
+import { Player, Transaction, Adjustment } from "../../types/index";
 import { convertToPounds } from "../../scripts/util";
+import { splitDiscrepancy, applyAdjustments } from "../../scripts/discrepancyUtils";
 
 import InputRow from "./InputRow";
 import TransactionTable from "./TransactionTable";
@@ -10,22 +11,19 @@ import TransactionTable from "./TransactionTable";
 const InputForm: React.FC<{}> = (props) => {
   let transactions: Transaction[] = new Array();
   const [ledger, setLedger] = useState<Player[]>([
-    { name: "", id: 0, net: 0 } as Player,
+    { name: "", id: 0, net: 0, inVal: 0 } as Player,
   ]);
   const [output, setOutput] = useState<Transaction[]>([]);
   const [discrepancy, setDiscrepancy] = useState<number>();
   const [playerCount, setPlayerCount] = useState(1);
   const [calculated, setCalculated] = useState(false);
   const [evens, setEvens] = useState(false);
+  const [adjustments, setAdjustments] = useState<Adjustment[]>([]);
+  const [splitError, setSplitError] = useState<string | null>(null);
 
   function addPlayer() {
-    // console.log("playerName:", playerName, " net: ", net);
-    // if (ledger.some((item) => item.name === playerName)) {
-    //   console.log("NAME ALREADY ENTERED ERROR");
-    //   return false;
-    // }
 
-    setLedger([...ledger, { id: playerCount, net: 0 } as Player]);
+    setLedger([...ledger, { id: playerCount, net: 0, inVal: 0 } as Player]);
     setPlayerCount(playerCount + 1);
     return true;
   }
@@ -62,27 +60,18 @@ const InputForm: React.FC<{}> = (props) => {
     setOutput([]);
     setDiscrepancy(undefined);
     setEvens(false);
+    setAdjustments([]);
+    setSplitError(null);
   }
 
   function calculate(players: Player[]) {
-    console.log("current players: ");
-    console.log(players);
-
-    // Filter out empty rows (rows with no name or with empty name and zero net)
-    const filteredPlayers = players.filter(player => {
-      return player.name && player.name.trim() !== '';
-    });
-
-    // Update the ledger to remove empty rows
-    setLedger(filteredPlayers);
-
     let sum = 0;
     let positives: Player[] = new Array();
     let negatives: Player[] = new Array();
 
     setCalculated(true);
 
-    filteredPlayers.forEach((player) => {
+    players.forEach((player) => {
       sum = sum + player.net;
       if (player.net > 0) {
         positives.push({ ...player });
@@ -147,6 +136,40 @@ const InputForm: React.FC<{}> = (props) => {
     }
     console.log("Transactions: ", transactions);
   }
+
+  function handleSplitDiscrepancy() {
+    if (!discrepancy) return;
+
+    const result = splitDiscrepancy(ledger, discrepancy);
+
+    if (!result.success) {
+      setSplitError(result.error || "Failed to split discrepancy");
+      return;
+    }
+
+    setSplitError(null);
+    setAdjustments(result.adjustments);
+
+    // Apply adjustments and recalculate transactions
+    const adjustedPlayers = applyAdjustments(ledger, result.adjustments);
+    setDiscrepancy(undefined);
+    calculate(adjustedPlayers);
+  }
+
+  function handleCalculate(players: Player[]) {
+    console.log("current players: ");
+    console.log(players);
+
+    // Filter out empty rows (rows with no name or with empty name and zero net)
+    const filteredPlayers = players.filter(player => {
+      return player.name && player.name.trim() !== '';
+    });
+
+    // Update the ledger to remove empty rows
+    setLedger(filteredPlayers);
+    calculate(filteredPlayers);
+
+  }
   return (
     <div className="flex flex-col justify-center items-center">
       {/* labels */}
@@ -193,12 +216,13 @@ const InputForm: React.FC<{}> = (props) => {
         ) : (
           <button
             className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
-            onClick={() => calculate(ledger)}
+            onClick={() => handleCalculate(ledger)}
           >
             Calculate
           </button>
         )}
       </div>
+
       <TransactionTable transactions={output} />
 
       {evens && !discrepancy && (
@@ -207,13 +231,43 @@ const InputForm: React.FC<{}> = (props) => {
         </div>
       )}
 
-      {discrepancy && (
-        <div className=" flex bg-gray-700 p-1 my-2 rounded text-center justify-center w-80 text-red-500">
-          {`Inputs do not sum to zero, calculated value is off by: ${convertToPounds(
-            discrepancy
-          )}`}
+      {adjustments.length > 0 && (
+        <div className="text-sm my-2">
+          <div>Adjustments made</div>
+          {Object.entries(
+            adjustments.reduce((acc, adj) => {
+              const key = adj.amount;
+              if (!acc[key]) acc[key] = [];
+              acc[key].push(adj.playerName);
+              return acc;
+            }, {} as Record<number, string[]>)
+          ).map(([amount, players], idx) => (
+            <div key={idx}>
+              {convertToPounds(Number(amount))}: {players.join(", ")}
+            </div>
+          ))}
         </div>
       )}
+
+      {discrepancy && (
+        <div className="flex flex-col items-center gap-2 my-2">
+          <div className="flex bg-gray-700 p-1 rounded text-center justify-center w-80 text-red-400">
+            {discrepancy > 0
+              ? `There is a shortfall of ${convertToPounds(discrepancy)}`
+              : `There is a surplus of ${convertToPounds(Math.abs(discrepancy))}`}
+          </div>
+          <button
+            className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors"
+            onClick={() => handleSplitDiscrepancy()}
+          >
+            Split the Discrepancy
+          </button>
+          {splitError && (
+            <div className="text-red-400 text-sm">{splitError}</div>
+          )}
+        </div>
+      )}
+
     </div>
   );
 };

@@ -12,17 +12,17 @@ const InputRow: React.FC<{
   const [inVal, setInVal] = useState(0);
   const [outVal, setOutVal] = useState(0);
   const { locked } = props;
-  function onNetChange(inVal: number, outVal: number) {
-    const newNet = convertToPence(outVal - inVal);
-    props.onChange({ ...props.player, net: newNet });
-  }
   function onInValChange(newInVal: number) {
     setInVal(newInVal);
-    onNetChange(newInVal, outVal);
+    const inPence = convertToPence(newInVal);
+    const newNet = convertToPence(outVal - newInVal);
+    props.onChange({ ...props.player, inVal: inPence, net: newNet });
   }
   function onOutValChange(newOutVal: number) {
     setOutVal(newOutVal);
-    onNetChange(inVal, newOutVal);
+    const inPence = convertToPence(inVal);
+    const newNet = convertToPence(newOutVal - inVal);
+    props.onChange({ ...props.player, inVal: inPence, net: newNet });
   }
 
   return (
