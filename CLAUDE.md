@@ -1,1 +1,2 @@
 - use pnpm
+- all buttons should be the same style
