@@ -66,7 +66,7 @@ const InputRow: React.FC<{
           id="netVal"
           className=" bg-gray-400 rounded w-20 h-6 mx-1 px-2 text-gray-700"
         >
-          {props.player.net ? convertToPounds(props.player.net) : null}
+          {props.player.net != null ? convertToPounds(props.player.net) : null}
         </div>
         {/* <button
           className="p-2 content-center flex border bg-gray-600 font-medium rounded hover:font-bold active:text-gray-400 active: border-gray-400 disabled:bg-gray-700 disabled:border-none"
