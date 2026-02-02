@@ -1,6 +1,6 @@
 export default function SplitTheDiscrepancy() {
   return (
-    <div className="min-h-screen w-screen flex flex-col items-center p-8">
+    <div className="min-h-screen w-full flex flex-col items-center p-8">
       <div className="max-w-2xl">
         <h1 className="text-2xl font-bold mb-6">Split the Discrepancy</h1>
 

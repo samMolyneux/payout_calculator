@@ -4,7 +4,7 @@ import InputForm from "./pages/home/InputForm";
 
 export default function Home() {
   return (
-    <div className="min-h-screen w-screen flex flex-col items-center">
+    <div className="min-h-screen w-full flex flex-col items-center">
       <div className="flex-grow flex flex-col justify-center items-center w-full">
         {/* <div className="py-2"></div> */}
         <div className="text-2xl text-center">payout_calculator</div>
