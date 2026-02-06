@@ -8,6 +8,16 @@ export default function Home() {
       <div className="flex-grow flex flex-col justify-center items-center w-full">
         {/* <div className="py-2"></div> */}
         <div className="text-2xl text-center">payout_calculator</div>
+        <div className="py-2">
+          <a
+            href="https://buymeacoffee.com/mountweb"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm px-3 py-1 bg-gray-600 hover:bg-gray-500 rounded transition-colors inline-block"
+          >
+            Buy me a coffee
+          </a>
+        </div>
         {/* <div className="py-2 px-0"></div> */}
         <InputForm />
       </div>
