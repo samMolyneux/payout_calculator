@@ -22,6 +22,16 @@ export default function Home() {
             mountwebservices@gmail.com
           </a>
         </p>
+        <div className="mt-4">
+          <a
+            href="https://buymeacoffee.com/mountweb"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded transition-colors text-gray-100"
+          >
+            Buy me a coffee
+          </a>
+        </div>
       </footer>
     </div>
   );
