@@ -7,7 +7,7 @@ export default function Home() {
     <div className="min-h-screen w-full flex flex-col items-center">
       <div className="flex-grow flex flex-col justify-center items-center w-full">
         {/* <div className="py-2"></div> */}
-        <div className="text-2xl text-center">payout_calculator</div>
+        <h1 className="text-2xl text-center">payout_calculator</h1>
         {/* <div className="py-2 px-0"></div> */}
         <InputForm />
       </div>

@@ -275,6 +275,7 @@ const InputForm: React.FC<{}> = (props) => {
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 className="w-4 h-4"
+                aria-hidden="true"
               >
                 <path
                   fillRule="evenodd"
