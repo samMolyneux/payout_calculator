@@ -9,10 +9,10 @@ interface SplitResult {
 /**
  * Splits the discrepancy among players.
  *
- * If discrepancy is positive (shortfall), players give back money (negative adjustments).
- * If discrepancy is negative (surplus), players receive extra money (positive adjustments).
+ * If discrepancy is positive (over count), players give back money (negative adjustments).
+ * If discrepancy is negative (under count), players receive extra money (positive adjustments).
  *
- * Uses cascading exclusion: in a shortfall, if a player's adjustment would exceed their outVal,
+ * Uses cascading exclusion: in a over count, if a player's adjustment would exceed their outVal,
  * they are excluded and the remaining players absorb the full discrepancy.
  */
 export function splitDiscrepancy(
@@ -27,13 +27,13 @@ export function splitDiscrepancy(
     };
   }
 
-  // For negative discrepancy (surplus), no exclusion needed - just distribute
+  // For negative discrepancy (under count), no exclusion needed - just distribute
   // Negate to get positive adjustments (players receive money)
   if (discrepancy < 0) {
     return distributeEvenly(players, -discrepancy);
   }
 
-  // For positive discrepancy (shortfall), check for cascading exclusions
+  // For positive discrepancy (over count), check for cascading exclusions
   const shortfall = discrepancy;
 
   // Keep excluding players whose adjustment would exceed their outVal

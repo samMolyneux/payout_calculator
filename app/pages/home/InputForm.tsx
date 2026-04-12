@@ -254,8 +254,8 @@ const InputForm: React.FC<{}> = (props) => {
         <div className="flex flex-col items-center gap-2 my-2">
           <div className="flex bg-gray-700 p-1 rounded text-center justify-center w-80 text-red-400">
             {discrepancy > 0
-              ? `There is a shortfall of ${convertToPounds(discrepancy)}`
-              : `There is a surplus of ${convertToPounds(Math.abs(discrepancy))}`}
+              ? `There is an over count of ${convertToPounds(discrepancy)}`
+              : `There is an under count of ${convertToPounds(Math.abs(discrepancy))}`}
           </div>
           <div className="flex items-center gap-2">
             <button

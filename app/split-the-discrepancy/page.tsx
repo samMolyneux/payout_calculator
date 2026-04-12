@@ -19,11 +19,11 @@ export default function SplitTheDiscrepancy() {
 
         <ul className="list-disc list-inside mb-4 space-y-2">
           <li>
-            <strong>Shortfall</strong> (money is missing): Each player gives
+            <strong>Over count</strong> (money is missing): Each player gives
             back a small amount to make up the difference
           </li>
           <li>
-            <strong>Surplus</strong> (extra money): Each player receives a bit
+            <strong>Under count</strong> (extra money): Each player receives a bit
             extra
           </li>
         </ul>

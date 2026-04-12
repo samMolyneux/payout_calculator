@@ -8,8 +8,8 @@ If the money at the table doesn't add up (due to lost chips, miscounts, etc) the
 
 Instead of figuring out who should cover the difference, the **Split the discrepancy** button can be used to automatically divide it evenly among all players:
 
-- **Shortfall** (money is missing): Each player gives back a small amount to make up the difference
-- **Surplus** (extra money): Each player receives a bit extra
+- **Over count** (money is missing): Each player gives back a small amount to make up the difference
+- **Under count** (extra money): Each player receives a bit extra
 
 If the amount doesn't divide evenly, the remainder (1p at a time) goes to the first few players. 
 
